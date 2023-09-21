@@ -68,10 +68,14 @@ struct PicassoProView: View {
             Text("Output")
                 .bold()
                 .opacity(0.5)
-            if viewModel.fetchState == .fetching{
+            if viewModel.fetchState == .generating{
                 VStack{
                     Spacer()
-                    Text("Fetching").foregroundColor(.accentColor)
+                    ProgressView{
+                        Text("Generating Image")
+                    }
+                    .foregroundColor(.accentColor)
+                    .font(.largeTitle)
                     Spacer()
                 }
             }
@@ -85,12 +89,17 @@ struct PicassoProView: View {
                     },
                     placeholder: {
                         switch viewModel.fetchState{
-                        case .fetching:
-                            Text("Fetching")
+                        case .generating:
+                            Text("Generating")
+                        case .generated:
+                            Text("Success")
+                                .foregroundColor(.accentColor)
+                                .font(.largeTitle)
                         case .emptyPrompt(let message):
                             Text(message)
                         case .error(let message):
                             Text(message).foregroundColor(.red.opacity(0.8))
+                        
                         }
                     }
                 )
