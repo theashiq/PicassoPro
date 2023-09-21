@@ -1,0 +1,106 @@
+//
+//  PromptInputView.swift
+//  PicassoPro
+//
+//  Created by mac 2019 on 9/20/23.
+//
+
+import SwiftUI
+
+struct PromptInputView: View{
+    
+    @ObservedObject var viewModel: PromptInputViewModel
+    @Binding var isPresented: Bool
+    
+    var body: some View{
+        VStack(alignment: .center){
+            Text("Enter Prompt").padding(.top)
+            Form {
+                
+                Section("Expression"){
+                    TextField("Expression", text: $viewModel.expression, axis: .vertical)
+                }
+                
+                Section("Optional"){
+                    
+                    if viewModel.excludedWords.count > 0 {
+                        ScrollView(.horizontal, showsIndicators: false){
+                            
+                            HStack{
+                                ForEach(Array(viewModel.excludedWords), id: \.self){ word in
+                                    ExcludedWordButton(title: word, action: {
+                                        viewModel.removeExcludedWord(word: word)
+                                    })
+                                }
+                            }
+                        }
+                    }
+                    HStack{
+                        TextField("Enter Excluded Words", text: $viewModel.excludedWordInput)
+                        Spacer()
+                        Button(action: {
+                            viewModel.addExcludedWord()
+                        }){
+                            Text("Add")
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                }
+            }
+                
+            Spacer()
+            
+            Button(action: {
+                isPresented = false
+                viewModel.submit()
+            }){
+                Text("Submit")
+                    .frame(width: 120, height: 55)
+            }
+            .buttonStyle(.bordered)
+        }
+    }
+    
+    private func submitPrompts(){
+        
+    }
+}
+
+struct ExcludedWordButton: View{
+    var title: String
+    var action: () -> Void = {
+        
+    }
+    var body: some View{
+        HStack{
+            Text(title)
+            Button(action: action){
+                Image(systemName: "xmark.circle.fill")
+                    .font(.title3)
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(Color.accentColor.opacity(0.3))
+        .cornerRadius(25)
+    }
+}
+
+
+struct PromptInputView_PreviewContainer: View{
+    @State var prompt: PromptInput = .empty
+    @Binding var isPresented: Bool
+    var body: some View{
+        Text("Hello")
+            .sheet(isPresented: $isPresented){
+                PromptInputView(viewModel: PromptInputViewModel(prompt: $prompt), isPresented: .constant(true))
+                    .presentationDetents([.medium, .fraction(0.75)])
+            }
+    }
+}
+
+struct PromptInputView_Previews: PreviewProvider {
+    static var previews: some View {
+        PromptInputView_PreviewContainer(isPresented: .constant(true))
+    }
+}

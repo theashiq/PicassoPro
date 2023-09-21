@@ -11,7 +11,7 @@ import SwiftUI
 struct PicassoProApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            PicassoProView()
         }
     }
 }
