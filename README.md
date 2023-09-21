@@ -3,6 +3,6 @@ An iOS app that generates images from text prompts utilizing Stable Diffusion AP
 
 # Screenshots
 ## Light Appearance
-![PicassoPro][Screenshots](Screenshot 2023-09-21 at 9.22.00 PM.png)
+https://raw.githubusercontent.com/theashiq/PicassoPro/main/ScreenShots/Screenshot%202023-09-21%20at%209.22.00%20PM.png
 ## Dark Appearance
-![PicassoPro][Screenshots](Screenshot 2023-09-21 at 9.23.59 PM.png)
+https://raw.githubusercontent.com/theashiq/PicassoPro/main/ScreenShots/Screenshot%202023-09-21%20at%209.23.59%20PM.png
