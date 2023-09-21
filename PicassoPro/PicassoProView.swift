@@ -68,10 +68,34 @@ struct PicassoProView: View {
             Text("Output")
                 .bold()
                 .opacity(0.5)
-            Text(viewModel.prompt.excludedWords)
-                .font(.title2)
-                .foregroundColor(.teal)
-                .padding()
+            if viewModel.fetchState == .fetching{
+                VStack{
+                    Spacer()
+                    Text("Fetching").foregroundColor(.accentColor)
+                    Spacer()
+                }
+            }
+            else{
+                AsyncImage(
+                    url: URL(string: viewModel.outputUrl),
+                    content: { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    },
+                    placeholder: {
+                        switch viewModel.fetchState{
+                        case .fetching:
+                            Text("Fetching")
+                        case .emptyPrompt(let message):
+                            Text(message)
+                        case .error(let message):
+                            Text(message).foregroundColor(.red.opacity(0.8))
+                        }
+                    }
+                )
+                .frame(maxHeight: 350)
+            }
         }
     }
     

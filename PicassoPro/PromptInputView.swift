@@ -18,7 +18,7 @@ struct PromptInputView: View{
             Form {
                 
                 Section("Expression"){
-                    TextField("Expression", text: $viewModel.expression, axis: .vertical)
+                    TextField("Describe the Image", text: $viewModel.expression, axis: .vertical)
                 }
                 
                 Section("Optional"){
@@ -36,14 +36,14 @@ struct PromptInputView: View{
                         }
                     }
                     HStack{
-                        TextField("Enter Excluded Words", text: $viewModel.excludedWordInput)
+                        TextField("Enter Excluded Features", text: $viewModel.excludedWordInput)
                         Spacer()
                         Button(action: {
                             viewModel.addExcludedWord()
                         }){
-                            Text("Add")
+                            Label("Add", systemImage: "plus.app").labelStyle(.titleAndIcon)
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.bordered)
                     }
                 }
             }
@@ -54,15 +54,11 @@ struct PromptInputView: View{
                 isPresented = false
                 viewModel.submit()
             }){
-                Text("Submit")
+                Text("Generate")
                     .frame(width: 120, height: 55)
             }
             .buttonStyle(.bordered)
         }
-    }
-    
-    private func submitPrompts(){
-        
     }
 }
 
