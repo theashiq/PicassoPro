@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct PromptInputView: View{
+    enum FocusedField {
+        case expression, exclusions
+    }
     
     @ObservedObject var viewModel: PromptInputViewModel
     @Binding var isPresented: Bool
+    @FocusState private var focusedField: FocusedField?
     
     var body: some View{
         VStack(alignment: .center){
@@ -18,11 +22,16 @@ struct PromptInputView: View{
             Form {
                 
                 Section("Expression"){
-                    TextField("Describe the Image", text: $viewModel.expression, axis: .vertical)
+                    TextField("Describe the Image", text: $viewModel.expression)
+                        .focused($focusedField, equals: .expression)
+                        .submitLabel(.next)
+                        .onSubmit {
+                            focusedField = .exclusions
+                        }
+                    
                 }
                 
                 Section("Optional"){
-                    
                     if viewModel.excludedWords.count > 0 {
                         ScrollView(.horizontal, showsIndicators: false){
                             
@@ -37,6 +46,11 @@ struct PromptInputView: View{
                     }
                     HStack{
                         TextField("Enter Excluded Features", text: $viewModel.excludedWordInput)
+                            .focused($focusedField, equals: .exclusions)
+                            .submitLabel(.done)
+                            .onSubmit {
+                                focusedField = nil
+                            }
                         Spacer()
                         Button(action: {
                             viewModel.addExcludedWord()
