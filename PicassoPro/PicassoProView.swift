@@ -12,6 +12,7 @@ struct PicassoProView: View {
     @StateObject var viewModel: PicassoProViewModel = PicassoProViewModel()
     
     @State var isInputViewPresented: Bool = false
+    @State var isAlertPresented: Bool = false
     
     var body: some View {
         VStack{
@@ -21,23 +22,31 @@ struct PicassoProView: View {
                 .foregroundColor(.accentColor)
                 .padding()
             
-            ZStack{
-                VStack{
-                    inputSection
-                    outputSection
-                }
-                if viewModel.prompt.isEmpty{
-                    emptyPrompt
-                }
+            VStack{
+                inputSection
+                outputSection
             }
             
             Spacer()
             
-            inputButton
+            inputButton.disabled(viewModel.isGeneratingImage)
+        }
+        .onChange(of: viewModel.error){ error in
+            if error != nil{
+                isAlertPresented.toggle()
+            }
         }
         .sheet(isPresented: $isInputViewPresented){
             PromptInputView(viewModel: PromptInputViewModel(prompt: $viewModel.prompt), isPresented: $isInputViewPresented)
                 .presentationDetents([.medium, .fraction(0.75)])
+        }
+        .alert(viewModel.error?.rawValue ?? "Alert", isPresented: $isAlertPresented, presenting: viewModel.error)
+        { _ in
+            Button("Ok", role: .cancel) {
+                viewModel.error = nil
+            }
+        } message: {
+            Text($0.localizedDescription)
         }
     }
     
@@ -63,48 +72,28 @@ struct PicassoProView: View {
         }
     }
     private var outputSection: some View{
-        
         Section{
             Text("Output")
                 .bold()
                 .opacity(0.5)
-            if viewModel.fetchState == .generating{
-                VStack{
-                    Spacer()
-                    ProgressView{
-                        Text("Generating Image")
+            
+            AsyncImage(
+                url: URL(string: viewModel.imageUrl),
+                content: { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                },
+                placeholder: {
+                    if viewModel.isGeneratingImage{
+                        ProgressView()
                     }
-                    .foregroundColor(.accentColor)
-                    .font(.largeTitle)
-                    Spacer()
+                    else if viewModel.prompt.isEmpty{
+                        emptyPrompt
+                    }
                 }
-            }
-            else{
-                AsyncImage(
-                    url: URL(string: viewModel.outputUrl),
-                    content: { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                    },
-                    placeholder: {
-                        switch viewModel.fetchState{
-                        case .generating:
-                            Text("Generating")
-                        case .generated:
-                            Text("Success")
-                                .foregroundColor(.accentColor)
-                                .font(.largeTitle)
-                        case .emptyPrompt(let message):
-                            Text(message)
-                        case .error(let message):
-                            Text(message).foregroundColor(.red.opacity(0.8))
-                        
-                        }
-                    }
-                )
-                .frame(maxHeight: 350)
-            }
+            )
+            .frame(maxHeight: 500)
         }
     }
     

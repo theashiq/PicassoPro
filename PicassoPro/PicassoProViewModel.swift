@@ -11,39 +11,35 @@ class PicassoProViewModel: ObservableObject{
     
     @Published var prompt: PromptInput = .empty {
         didSet{
-            if prompt.isEmpty{
-                fetchState = .emptyPrompt("Enter prompt below")
-            }
-            else{
+            if !isGeneratingImage && !prompt.isEmpty {
+                isGeneratingImage = true
+                error = nil
                 fetchData()
             }
         }
     }
-    @Published var outputUrl: String = ""
-    @Published var fetchState: FetchState = .emptyPrompt("Enter prompt below")
     
-    func fetchData(){
-        fetchState = .generating
+    @Published var imageUrl: String = ""
+    @Published var isGeneratingImage: Bool = false
+    @Published var error: StableDiffusionError? = nil
+    
+    private func fetchData(){
         Task{
-            do{
-                let urls = try await StableDiffusionAPIManager.shared.getImageUrlFromText(prompt: prompt)
+            await StableDiffusionAPIManager.shared.getImageUrls(prompt: prompt){ [self] result in
+                isGeneratingImage = false
                 
-                if urls.count > 0{
-                    outputUrl = urls[0]
-                    fetchState = .generated
+                switch result{
+                case .success(let apiResponseData):
+                    if apiResponseData.output.count > 0{
+                        self.imageUrl = apiResponseData.output.first!
+                    }
+                case .failure(let error):
+                    self.imageUrl = ""
+                    self.error = error as? StableDiffusionError
                 }
-            }
-            catch{
-                fetchState = .error(error.localizedDescription)
             }
         }
     }
 }
 
-enum FetchState: Equatable{
-    case emptyPrompt(String)
-    case generating
-    case generated
-    case error(String)
-}
 
