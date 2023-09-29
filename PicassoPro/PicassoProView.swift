@@ -22,9 +22,16 @@ struct PicassoProView: View {
                 .foregroundColor(.accentColor)
                 .padding()
             
-            VStack{
-                inputSection
-                outputSection
+            ZStack{
+                if viewModel.prompt.isEmpty{
+                    emptyPrompt.opacity(viewModel.prompt.isEmpty ? 1 : 0)
+                }
+                else{
+                    VStack{
+                        inputSection
+                        outputSection
+                    }
+                }
             }
             
             Spacer()
@@ -85,11 +92,7 @@ struct PicassoProView: View {
                             .resizable()
                             .scaledToFit()
                     },
-                    placeholder: {
-                        if viewModel.prompt.isEmpty{
-                            emptyPrompt
-                        }
-                    }
+                    placeholder: { }
                 ).opacity(viewModel.isGeneratingImage ? 0.2 : 1)
                 
                 if viewModel.isGeneratingImage{
