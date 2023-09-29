@@ -26,16 +26,18 @@ class PicassoProViewModel: ObservableObject{
     private func fetchData(){
         Task{
             await StableDiffusionAPIManager.shared.getImageUrls(prompt: prompt){ [self] result in
-                isGeneratingImage = false
-                
-                switch result{
-                case .success(let apiResponseData):
-                    if apiResponseData.output.count > 0{
-                        self.imageUrl = apiResponseData.output.first!
+                DispatchQueue.main.async{
+                    isGeneratingImage = false
+                    
+                    switch result{
+                    case .success(let apiResponseData):
+                        if apiResponseData.output.count > 0{
+                            self.imageUrl = apiResponseData.output.first!
+                        }
+                    case .failure(let error):
+                        self.imageUrl = ""
+                        self.error = error as? StableDiffusionError
                     }
-                case .failure(let error):
-                    self.imageUrl = ""
-                    self.error = error as? StableDiffusionError
                 }
             }
         }

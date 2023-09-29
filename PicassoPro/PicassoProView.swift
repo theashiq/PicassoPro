@@ -77,22 +77,25 @@ struct PicassoProView: View {
                 .bold()
                 .opacity(0.5)
             
-            AsyncImage(
-                url: URL(string: viewModel.imageUrl),
-                content: { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                },
-                placeholder: {
-                    if viewModel.isGeneratingImage{
-                        ProgressView()
+            ZStack{
+                AsyncImage(
+                    url: URL(string: viewModel.imageUrl),
+                    content: { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    },
+                    placeholder: {
+                        if viewModel.prompt.isEmpty{
+                            emptyPrompt
+                        }
                     }
-                    else if viewModel.prompt.isEmpty{
-                        emptyPrompt
-                    }
+                ).opacity(viewModel.isGeneratingImage ? 0.2 : 1)
+                
+                if viewModel.isGeneratingImage{
+                    ProgressView().foregroundColor(.accentColor)
                 }
-            )
+            }
             .frame(maxHeight: 500)
         }
     }
