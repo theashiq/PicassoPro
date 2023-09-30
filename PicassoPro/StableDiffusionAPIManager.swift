@@ -42,7 +42,7 @@ final class StableDiffusionAPIManager{
         parameters.updateValue(prompt.outputImageHeight, forKey: "height")
     }
     
-    func getImageUrls(prompt: PromptInput, completed: @escaping (Result<ApiResponseData, Error>) -> Void) async {
+    func getImageUrls(prompt: PromptInput, completed: @escaping (Result<ApiResponseData, StableDiffusionError>) -> Void) async {
         
         guard let url = URL(string: StableDiffusionAPIManager.urlString) else {
             completed(Result.failure(StableDiffusionError.networkError("Invalid URL")))
@@ -82,7 +82,7 @@ final class StableDiffusionAPIManager{
                 completed(.failure(StableDiffusionError.apiError(emptyModalIdErrorResponse.message)))
             }
             else{
-                completed(.failure(StableDiffusionError.unknownError))
+                completed(.failure(StableDiffusionError.unknownError()))
             }
         }
         else{
@@ -94,7 +94,7 @@ final class StableDiffusionAPIManager{
 enum StableDiffusionError: Error, LocalizedError, Equatable{
     case apiError(String)
     case networkError(String)
-    case unknownError
+    case unknownError(String = "An  error occurred. Please retry after sometime")
     
     var errorDescription: String?{
         switch self{
@@ -102,8 +102,8 @@ enum StableDiffusionError: Error, LocalizedError, Equatable{
             return message
         case .networkError(let message):
             return message
-        case .unknownError:
-            return "An unknown error occurred. Please retry after sometime."
+        case .unknownError(let message):
+            return message
         }
     }
 }
@@ -116,7 +116,7 @@ extension StableDiffusionError: RawRepresentable {
         switch rawValue {
         case "API Error":  self = .apiError("API Error")
         case "Network Error":  self = .networkError("Network Error")
-        case "Unknown Error":  self = .unknownError
+        case "Error":  self = .unknownError()
         default:
             return nil
         }

@@ -39,8 +39,8 @@ struct PicassoProView: View {
             Spacer()
             inputButton
         }
-        .onChange(of: viewModel.error){ error in
-            if error != nil{
+        .onChange(of: viewModel.alertStatus){ error in
+            if error != .none{
                 isAlertPresented.toggle()
             }
         }
@@ -48,13 +48,13 @@ struct PicassoProView: View {
             PromptInputView(viewModel: PromptInputViewModel(prompt: $viewModel.prompt), isPresented: $isInputViewPresented)
                 .presentationDetents([.medium, .fraction(0.75)])
         }
-        .alert(viewModel.error?.rawValue ?? "Alert", isPresented: $isAlertPresented, presenting: viewModel.error)
-        { _ in
+        .alert(viewModel.alertStatus.title, isPresented: $isAlertPresented)
+        {
             Button("Ok", role: .cancel) {
-                viewModel.error = nil
+                viewModel.alertStatus = .none
             }
         } message: {
-            Text($0.localizedDescription)
+            Text(viewModel.alertStatus.message)
         }
     }
     
@@ -76,12 +76,37 @@ struct PicassoProView: View {
                         .padding(5)
                         .border(Color.accentColor)
                     
-                    ShareLink("Share", item: image, preview: SharePreview(viewModel.prompt.expression, image: image))
-                        .foregroundColor(.accentColor)
-                        .padding()
+                    HStack(spacing: 50){
+                        ShareLink("Share", item: image, preview: SharePreview(viewModel.prompt.expression, image: image))
+                        
+                        Button{
+                            withAnimation(.easeInOut(duration: 1)){
+                                viewModel.saveImage(image: image)
+                            }
+                        } label: {
+                            switch viewModel.imageSaveState{
+                            case .toBeDone:
+                                Label("Save", systemImage: "square.and.arrow.down")
+                            case .doing:
+                                Label("Saving...", systemImage: "timer")
+                                    .foregroundColor(.gray)
+                            case .done:
+                                Label("Saved", systemImage: "checkmark.circle")
+                                    .foregroundColor(.green)
+                            case .failed:
+                                Label("Retry Save", systemImage: "externaldrive.badge.exclamationmark")
+                                    .foregroundColor(.red)
+                            }
+                        }
+                        .disabled(viewModel.imageSaveState == .doing || viewModel.imageSaveState == .done)
+                    }
+                    .foregroundColor(.accentColor)
+                    .padding()
                 },
                 placeholder: {
-                    ProgressView("Loading").foregroundColor(.accentColor)
+                    if !viewModel.imageUrl.isEmpty{
+                        ProgressView("Loading").foregroundColor(.accentColor)
+                    }
                 }
             ).opacity(viewModel.isGeneratingImage ? 0.2 : 1)
             
