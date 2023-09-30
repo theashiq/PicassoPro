@@ -13,26 +13,34 @@ struct PicassoProView: View {
     
     @State var isInputViewPresented: Bool = false
     @State var isAlertPresented: Bool = false
+    @State var animateInputButtonIndicator: Bool = false
     
     var body: some View {
         VStack{
             Text("Picasso Pro")
-                .font(.title)
+                .font(.largeTitle)
                 .bold()
                 .foregroundColor(.accentColor)
-                .padding()
             
-            VStack{
-                inputSection
+            if viewModel.showEmptyPromptSign{
+                Spacer()
+                emptyPrompt
+            }
+            else{
+                Text(viewModel.prompt.expression)
+                    .font(.title3)
+                    .frame(maxWidth: .infinity, maxHeight: 100)
+                    .padding(.horizontal)
+                Spacer()
+                
                 outputSection
             }
             
             Spacer()
-            
-            inputButton.disabled(viewModel.isGeneratingImage)
+            inputButton
         }
-        .onChange(of: viewModel.error){ error in
-            if error != nil{
+        .onChange(of: viewModel.alertStatus){ error in
+            if error != .none{
                 isAlertPresented.toggle()
             }
         }
@@ -40,64 +48,74 @@ struct PicassoProView: View {
             PromptInputView(viewModel: PromptInputViewModel(prompt: $viewModel.prompt), isPresented: $isInputViewPresented)
                 .presentationDetents([.medium, .fraction(0.75)])
         }
-        .alert(viewModel.error?.rawValue ?? "Alert", isPresented: $isAlertPresented, presenting: viewModel.error)
-        { _ in
+        .alert(viewModel.alertStatus.title, isPresented: $isAlertPresented)
+        {
             Button("Ok", role: .cancel) {
-                viewModel.error = nil
+                viewModel.alertStatus = .none
             }
         } message: {
-            Text($0.localizedDescription)
+            Text(viewModel.alertStatus.message)
         }
     }
     
     private var emptyPrompt: some View{
-        ZStack(alignment: .center){
-            Color(uiColor: .systemBackground)
-            Text("Empty Prompt\nEnter Prompt Below")
-                .multilineTextAlignment(.center)
-                .font(.title3)
-        }
+        Text("Prompt is Empty\nEnter Prompt Below")
+            .multilineTextAlignment(.center)
+            .font(.title3)
+            .foregroundColor(.accentColor)
+            .lineSpacing(CGFloat(10))
     }
     
-    private var inputSection: some View{
-        Section{
-            Text("Input")
-                .bold()
-                .opacity(0.5)
-            
-            Text(viewModel.prompt.expression)
-                .font(.title2)
-                .padding()
-                .frame(height: 100)
-        }
-    }
     private var outputSection: some View{
-        Section{
-            Text("Output")
-                .bold()
-                .opacity(0.5)
-            
-            ZStack{
-                AsyncImage(
-                    url: URL(string: viewModel.imageUrl),
-                    content: { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                    },
-                    placeholder: {
-                        if viewModel.prompt.isEmpty{
-                            emptyPrompt
+        ZStack{
+            AsyncImage(
+                url: URL(string: viewModel.imageUrl),
+                content: { image in
+                    
+                    image.resizable().scaledToFit()
+                        .padding(5)
+                        .border(Color.accentColor)
+                    
+                    HStack(spacing: 50){
+                        ShareLink("Share", item: image, preview: SharePreview(viewModel.prompt.expression, image: image))
+                        
+                        Button{
+                            withAnimation(.easeInOut(duration: 1)){
+                                viewModel.saveImage(image: image)
+                            }
+                        } label: {
+                            switch viewModel.imageSaveState{
+                            case .toBeDone:
+                                Label("Save", systemImage: "square.and.arrow.down")
+                            case .doing:
+                                Label("Saving...", systemImage: "timer")
+                                    .foregroundColor(.gray)
+                            case .done:
+                                Label("Saved", systemImage: "checkmark.circle")
+                                    .foregroundColor(.green)
+                            case .failed:
+                                Label("Retry Save", systemImage: "externaldrive.badge.exclamationmark")
+                                    .foregroundColor(.red)
+                            }
                         }
+                        .disabled(viewModel.imageSaveState == .doing || viewModel.imageSaveState == .done)
                     }
-                ).opacity(viewModel.isGeneratingImage ? 0.2 : 1)
-                
-                if viewModel.isGeneratingImage{
-                    ProgressView().foregroundColor(.accentColor)
+                    .foregroundColor(.accentColor)
+                    .padding()
+                },
+                placeholder: {
+                    if !viewModel.imageUrl.isEmpty{
+                        ProgressView("Loading").foregroundColor(.accentColor)
+                    }
                 }
+            ).opacity(viewModel.isGeneratingImage ? 0.2 : 1)
+            
+            if viewModel.isGeneratingImage{
+                ProgressView("Processing").foregroundColor(.accentColor)
             }
-            .frame(maxHeight: 500)
         }
+        .frame(maxHeight: 500)
+        
     }
     
     private  var inputButton: some View{
@@ -108,9 +126,27 @@ struct PicassoProView: View {
             Image(systemName: "pencil.circle.fill")
                 .bold()
                 .scaleEffect(3)
-                .padding(20)
+                .padding(.bottom, viewModel.showEmptyPromptSign ? 50 : 20)
         }
-        .buttonStyle(.borderless)
+        .disabled(viewModel.isGeneratingImage)
+        .overlay{
+            if viewModel.showEmptyPromptSign{
+                inputButtonIndicator
+                    .onAppear {
+                        animateInputButtonIndicator = viewModel.showEmptyPromptSign
+                    }
+            }
+        }
+    }
+    private var inputButtonIndicator: some View{
+        Image(systemName: "arrowshape.right.fill")
+            .rotationEffect(Angle(degrees: 90))
+            .scaleEffect(CGSize(width: 1.5, height: 1.5))
+            .foregroundColor(.accentColor)
+            .offset(y: animateInputButtonIndicator ? -90 : -120)
+            .imageScale(animateInputButtonIndicator ? .large : .small)
+            .opacity(animateInputButtonIndicator ? 1 : 0.2)
+            .animation(.easeInOut(duration: 1).repeatForever(), value: animateInputButtonIndicator)
     }
 }
 
