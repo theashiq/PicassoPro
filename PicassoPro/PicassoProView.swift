@@ -27,7 +27,12 @@ struct PicassoProView: View {
                 emptyPrompt
             }
             else{
-                inputSection
+                Text(viewModel.prompt.expression)
+                    .font(.title3)
+                    .frame(maxWidth: .infinity, maxHeight: 100)
+                    .padding(.horizontal)
+                Spacer()
+                
                 outputSection
             }
             
@@ -61,41 +66,31 @@ struct PicassoProView: View {
             .lineSpacing(CGFloat(10))
     }
     
-    private var inputSection: some View{
-        Section{
-            Text("Input")
-                .bold()
-                .opacity(0.5)
-            
-            Text(viewModel.prompt.expression)
-                .font(.title2)
-                .padding()
-                .frame(height: 100)
-        }
-    }
     private var outputSection: some View{
-        Section{
-            Text("Output")
-                .bold()
-                .opacity(0.5)
-            
-            ZStack{
-                AsyncImage(
-                    url: URL(string: viewModel.imageUrl),
-                    content: { image in
-                        image.resizable().scaledToFit()
-                    },
-                    placeholder: {
-                        ProgressView("Loading").foregroundColor(.accentColor)
-                    }
-                ).opacity(viewModel.isGeneratingImage ? 0.2 : 1)
-                
-                if viewModel.isGeneratingImage{
-                    ProgressView("Processing").foregroundColor(.accentColor)
+        ZStack{
+            AsyncImage(
+                url: URL(string: viewModel.imageUrl),
+                content: { image in
+                    
+                    image.resizable().scaledToFit()
+                        .padding(5)
+                        .border(Color.accentColor)
+                    
+                    ShareLink("Share", item: image, preview: SharePreview(viewModel.prompt.expression, image: image))
+                        .foregroundColor(.accentColor)
+                        .padding()
+                },
+                placeholder: {
+                    ProgressView("Loading").foregroundColor(.accentColor)
                 }
+            ).opacity(viewModel.isGeneratingImage ? 0.2 : 1)
+            
+            if viewModel.isGeneratingImage{
+                ProgressView("Processing").foregroundColor(.accentColor)
             }
-            .frame(maxHeight: 500)
         }
+        .frame(maxHeight: 500)
+        
     }
     
     private  var inputButton: some View{
