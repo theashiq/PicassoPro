@@ -23,11 +23,15 @@ class PicassoProViewModel: ObservableObject{
     @Published var isGeneratingImage: Bool = false
     @Published var error: StableDiffusionError? = nil
     
+    var showEmptyPromptSign: Bool{
+        prompt.isEmpty && !isGeneratingImage && imageUrl.isEmpty
+    }
+    
     private func fetchData(){
         Task{
             await StableDiffusionAPIManager.shared.getImageUrls(prompt: prompt){ [self] result in
                 DispatchQueue.main.async{
-                    isGeneratingImage = false
+                    self.isGeneratingImage = false
                     
                     switch result{
                     case .success(let apiResponseData):

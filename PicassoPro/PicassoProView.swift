@@ -13,30 +13,38 @@ struct PicassoProView: View {
     
     @State var isInputViewPresented: Bool = false
     @State var isAlertPresented: Bool = false
+    @State var animateInputButtonIndicator: Bool = false
     
     var body: some View {
         VStack{
             Text("Picasso Pro")
-                .font(.title)
+                .font(.largeTitle)
                 .bold()
                 .foregroundColor(.accentColor)
-                .padding()
             
-            ZStack{
-                if viewModel.prompt.isEmpty{
-                    emptyPrompt.opacity(viewModel.prompt.isEmpty ? 1 : 0)
-                }
-                else{
-                    VStack{
-                        inputSection
-                        outputSection
-                    }
-                }
+            if viewModel.showEmptyPromptSign{
+                Spacer()
+                emptyPrompt
+            }
+            else{
+                inputSection
+                outputSection
             }
             
             Spacer()
             
-            inputButton.disabled(viewModel.isGeneratingImage)
+            VStack{
+                inputButton
+                    .disabled(viewModel.isGeneratingImage)
+                    .overlay{
+                        if viewModel.showEmptyPromptSign{
+                            inputButtonIndicator
+                                .onAppear {
+                                    animateInputButtonIndicator = viewModel.showEmptyPromptSign
+                                }
+                        }
+                    }
+            }
         }
         .onChange(of: viewModel.error){ error in
             if error != nil{
@@ -58,12 +66,11 @@ struct PicassoProView: View {
     }
     
     private var emptyPrompt: some View{
-        ZStack(alignment: .center){
-            Color(uiColor: .systemBackground)
-            Text("Empty Prompt\nEnter Prompt Below")
-                .multilineTextAlignment(.center)
-                .font(.title3)
-        }
+        Text("Prompt is Empty\nEnter Prompt Below")
+            .multilineTextAlignment(.center)
+            .font(.title3)
+            .foregroundColor(.accentColor)
+            .lineSpacing(CGFloat(10))
     }
     
     private var inputSection: some View{
@@ -88,15 +95,15 @@ struct PicassoProView: View {
                 AsyncImage(
                     url: URL(string: viewModel.imageUrl),
                     content: { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
+                        image.resizable().scaledToFit()
                     },
-                    placeholder: { }
+                    placeholder: {
+                        ProgressView("Loading").foregroundColor(.accentColor)
+                    }
                 ).opacity(viewModel.isGeneratingImage ? 0.2 : 1)
                 
                 if viewModel.isGeneratingImage{
-                    ProgressView().foregroundColor(.accentColor)
+                    ProgressView("Processing").foregroundColor(.accentColor)
                 }
             }
             .frame(maxHeight: 500)
@@ -111,9 +118,18 @@ struct PicassoProView: View {
             Image(systemName: "pencil.circle.fill")
                 .bold()
                 .scaleEffect(3)
-                .padding(20)
+                .padding(.bottom, viewModel.showEmptyPromptSign ? 50 : 20)
         }
-        .buttonStyle(.borderless)
+    }
+    private var inputButtonIndicator: some View{
+        Image(systemName: "arrowshape.right.fill")
+            .rotationEffect(Angle(degrees: 90))
+            .scaleEffect(CGSize(width: 1.5, height: 1.5))
+            .foregroundColor(.accentColor)
+            .offset(y: animateInputButtonIndicator ? -90 : -120)
+            .imageScale(animateInputButtonIndicator ? .large : .small)
+            .opacity(animateInputButtonIndicator ? 1 : 0.2)
+            .animation(.easeInOut(duration: 1).repeatForever(), value: animateInputButtonIndicator)
     }
 }
 
