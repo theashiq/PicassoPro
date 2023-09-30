@@ -32,19 +32,7 @@ struct PicassoProView: View {
             }
             
             Spacer()
-            
-            VStack{
-                inputButton
-                    .disabled(viewModel.isGeneratingImage)
-                    .overlay{
-                        if viewModel.showEmptyPromptSign{
-                            inputButtonIndicator
-                                .onAppear {
-                                    animateInputButtonIndicator = viewModel.showEmptyPromptSign
-                                }
-                        }
-                    }
-            }
+            inputButton
         }
         .onChange(of: viewModel.error){ error in
             if error != nil{
@@ -119,6 +107,15 @@ struct PicassoProView: View {
                 .bold()
                 .scaleEffect(3)
                 .padding(.bottom, viewModel.showEmptyPromptSign ? 50 : 20)
+        }
+        .disabled(viewModel.isGeneratingImage)
+        .overlay{
+            if viewModel.showEmptyPromptSign{
+                inputButtonIndicator
+                    .onAppear {
+                        animateInputButtonIndicator = viewModel.showEmptyPromptSign
+                    }
+            }
         }
     }
     private var inputButtonIndicator: some View{
