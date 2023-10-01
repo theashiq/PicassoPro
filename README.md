@@ -1,5 +1,5 @@
 # PicassoPro
-An iOS app that generates images from text prompts utilizing Stable Diffusion API
+An iOS app that generates images from text prompts utilizing Stable Diffusion API. Generated images can be shared or save to the gallery
 
 # Screenshots
 ## Light Appearance
