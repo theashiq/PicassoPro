@@ -2,18 +2,41 @@
 An iOS app that generates images from text prompts utilizing StableDiffusionAPI. Generated images can be shared or saved to the gallery.
 
 # Screenshots
-## Light Appearance
-![Light 1](ScreenShots/Light1.png)
-![Light 2](ScreenShots/Light2.png)
-![Light 3](ScreenShots/Light3.png)
-![Light 4](ScreenShots/Light4.png)
-![Light 5](ScreenShots/Light5.png)
-## Dark Appearance
-![Dark 1](ScreenShots/Dark1.png)
-![Dark 2](ScreenShots/Dark2.png)
-![Dark 3](ScreenShots/Dark3.png)
-![Dark 4](ScreenShots/Dark4.png)
-![Dark 5](ScreenShots/Dark5.png)
+
+## Landing Page
+<p align="center">
+  <img alt="Landing Page - Light" title="Landing Page - Light" src="ScreenShots/Light1.png" width="45%">
+&nbsp;
+  <img alt="Landing Page - Dark" title="Landing Page - Dark" src="ScreenShots/Dark1.png" width="45%">
+</p>
+
+## Prompt Input
+<p align="center">
+  <img alt="Prompt Input - Light" title="Prompt Input - Light" src="ScreenShots/Light2.png" width="45%">
+&nbsp;
+  <img alt="Prompt Input - Dark" title="Prompt Input - Dark" src="ScreenShots/Dark2.png" width="45%">
+</p>
+
+## Processing Page
+<p align="center">
+  <img alt="Processing Page - Light" title="Processing Page - Light" src="ScreenShots/Light3.png" width="45%">
+&nbsp;
+  <img alt="Processing Page - Dark" title="Processing Page - Dark" src="ScreenShots/Dark3.png" width="45%">
+</p>
+
+## Output Page
+<p align="center">
+  <img alt="Output Page - Light" title="Output Page - Light" src="ScreenShots/Light4.png" width="45%">
+&nbsp;
+  <img alt="Output Page - Dark" title="Output Page - Dark" src="ScreenShots/Dark4.png" width="45%">
+</p>
+
+## Alert Dialog
+<p align="center">
+  <img alt="Alert Dialog - Light" title="Alert Dialog - Light" src="ScreenShots/Light5.png" width="45%">
+&nbsp;
+  <img alt="Alert Dialog - Dark" title="Alert Dialog - Dark" src="ScreenShots/Dark5.png" width="45%">
+</p>
 
 # Note
 A free trial API key is being used in the project which may expire at any time. This will make the app to stop working.
