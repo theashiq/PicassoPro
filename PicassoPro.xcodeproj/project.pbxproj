@@ -14,6 +14,8 @@
 		1AB494A72ABB31F700CDC43E /* PromptInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB494A62ABB31F700CDC43E /* PromptInputView.swift */; };
 		1AB494A92ABB347000CDC43E /* PromptInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB494A82ABB347000CDC43E /* PromptInput.swift */; };
 		1AB494AB2ABB3AEA00CDC43E /* PicassoProViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB494AA2ABB3AEA00CDC43E /* PicassoProViewModel.swift */; };
+		1AC2E7AF2ACA91E600AF4FCB /* StableDiffusionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC2E7AE2ACA91E600AF4FCB /* StableDiffusionError.swift */; };
+		1AC2E7B12ACA922700AF4FCB /* StableDiffusionAPIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC2E7B02ACA922700AF4FCB /* StableDiffusionAPIModel.swift */; };
 		1AC6B01B2ABA79A8004BF4F6 /* PicassoProApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC6B01A2ABA79A8004BF4F6 /* PicassoProApp.swift */; };
 		1AC6B01D2ABA79A8004BF4F6 /* PicassoProView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC6B01C2ABA79A8004BF4F6 /* PicassoProView.swift */; };
 		1AC6B01F2ABA79AA004BF4F6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AC6B01E2ABA79AA004BF4F6 /* Assets.xcassets */; };
@@ -28,6 +30,8 @@
 		1AB494A62ABB31F700CDC43E /* PromptInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptInputView.swift; sourceTree = "<group>"; };
 		1AB494A82ABB347000CDC43E /* PromptInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptInput.swift; sourceTree = "<group>"; };
 		1AB494AA2ABB3AEA00CDC43E /* PicassoProViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicassoProViewModel.swift; sourceTree = "<group>"; };
+		1AC2E7AE2ACA91E600AF4FCB /* StableDiffusionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StableDiffusionError.swift; sourceTree = "<group>"; };
+		1AC2E7B02ACA922700AF4FCB /* StableDiffusionAPIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StableDiffusionAPIModel.swift; sourceTree = "<group>"; };
 		1AC6B0172ABA79A8004BF4F6 /* PicassoPro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PicassoPro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AC6B01A2ABA79A8004BF4F6 /* PicassoProApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicassoProApp.swift; sourceTree = "<group>"; };
 		1AC6B01C2ABA79A8004BF4F6 /* PicassoProView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicassoProView.swift; sourceTree = "<group>"; };
@@ -54,6 +58,43 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		1AC2E7AA2ACA919D00AF4FCB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1AB494A82ABB347000CDC43E /* PromptInput.swift */,
+				1AC2E7B02ACA922700AF4FCB /* StableDiffusionAPIModel.swift */,
+				1AC2E7AE2ACA91E600AF4FCB /* StableDiffusionError.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		1AC2E7AB2ACA91AD00AF4FCB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1AC6B01C2ABA79A8004BF4F6 /* PicassoProView.swift */,
+				1AB494A62ABB31F700CDC43E /* PromptInputView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		1AC2E7AC2ACA91B900AF4FCB /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				1AB494AA2ABB3AEA00CDC43E /* PicassoProViewModel.swift */,
+				1AB494A42ABB31E800CDC43E /* PromptInputViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		1AC2E7AD2ACA91C100AF4FCB /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				1AB31BBD2AC8A4F100ACD403 /* ImageSaver.swift */,
+				1AB150EB2ABC3A2B004D6B7D /* StableDiffusionAPIManager.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		1AC6B00E2ABA79A8004BF4F6 = {
 			isa = PBXGroup;
 			children = (
@@ -74,14 +115,11 @@
 			isa = PBXGroup;
 			children = (
 				1AB31BBF2AC8A6A100ACD403 /* Extensions */,
-				1AB31BBD2AC8A4F100ACD403 /* ImageSaver.swift */,
-				1AB150EB2ABC3A2B004D6B7D /* StableDiffusionAPIManager.swift */,
+				1AC2E7AD2ACA91C100AF4FCB /* Utilities */,
+				1AC2E7AA2ACA919D00AF4FCB /* Models */,
+				1AC2E7AB2ACA91AD00AF4FCB /* Views */,
+				1AC2E7AC2ACA91B900AF4FCB /* ViewModels */,
 				1AC6B01A2ABA79A8004BF4F6 /* PicassoProApp.swift */,
-				1AC6B01C2ABA79A8004BF4F6 /* PicassoProView.swift */,
-				1AB494AA2ABB3AEA00CDC43E /* PicassoProViewModel.swift */,
-				1AB494A82ABB347000CDC43E /* PromptInput.swift */,
-				1AB494A62ABB31F700CDC43E /* PromptInputView.swift */,
-				1AB494A42ABB31E800CDC43E /* PromptInputViewModel.swift */,
 				1AC6B01E2ABA79AA004BF4F6 /* Assets.xcassets */,
 				1AC6B0202ABA79AA004BF4F6 /* Preview Content */,
 			);
@@ -167,8 +205,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AB494A52ABB31E800CDC43E /* PromptInputViewModel.swift in Sources */,
+				1AC2E7AF2ACA91E600AF4FCB /* StableDiffusionError.swift in Sources */,
 				1AB494A92ABB347000CDC43E /* PromptInput.swift in Sources */,
 				1AB31BC12AC8A6B800ACD403 /* Image+Ext.swift in Sources */,
+				1AC2E7B12ACA922700AF4FCB /* StableDiffusionAPIModel.swift in Sources */,
 				1AB494A72ABB31F700CDC43E /* PromptInputView.swift in Sources */,
 				1AC6B01D2ABA79A8004BF4F6 /* PicassoProView.swift in Sources */,
 				1AC6B01B2ABA79A8004BF4F6 /* PicassoProApp.swift in Sources */,
