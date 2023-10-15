@@ -1,6 +1,9 @@
 # PicassoPro
 An iOS app that generates images from text prompts utilizing StableDiffusionAPI. Generated images can be shared or saved to the gallery.
 
+## UI Framework
+SwiftUI
+
 # Screenshots
 
 ## Landing Page
