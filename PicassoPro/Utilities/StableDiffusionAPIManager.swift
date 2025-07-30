@@ -8,7 +8,7 @@
 import Foundation
 
 final class StableDiffusionAPIManager{
-    private static let urlString = "https://stablediffusionapi.com/api/v3/text2img"
+    private static let urlString = "https://modelslab.com/api/v6/realtime/text2img"
     private static let apiKey = "zAXjIPV7I9Sdl1YJ5e6Z4Zl5ucgjd62UbKJ4xrYHFeF47TWzmxFtNe95M4Dj"
     
     private var parameters: [String: Any] = [
@@ -21,7 +21,7 @@ final class StableDiffusionAPIManager{
         "num_inference_steps": "20",
         "seed": "",
         "guidance_scale": 7.5,
-        "safety_checker": "yes",
+        "safety_checker": true,
         "multi_lingual": "no",
         "panorama": "no",
         "self_attention": "no",

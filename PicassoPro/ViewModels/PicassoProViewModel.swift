@@ -39,8 +39,10 @@ import SwiftUI
                 
                 switch result{
                 case .success(let apiResponseData):
-                    if apiResponseData.output.count > 0{
-                        self?.imageUrl = apiResponseData.output.first!
+                    if let output = apiResponseData.output, output.count > 0{
+                        self?.imageUrl = output.first!
+                    } else {
+                        print("response is nil")
                     }
                 case .failure(let error):
                     self?.imageUrl = ""

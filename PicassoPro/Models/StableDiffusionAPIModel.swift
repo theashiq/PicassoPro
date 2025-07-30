@@ -8,11 +8,11 @@
 import Foundation
 
 struct ApiResponseData: Decodable{
-    var status: String
-    var generationTime: Float
-    var id: Int
-    var output: [String]
-    var meta: ApiResponseMeta
+    var status: String?
+    var generationTime: Float?
+    var id: Int?
+    var output: [String]?
+    var meta: ApiResponseMeta?
 }
 
 struct ApiResponseMeta: Decodable{
