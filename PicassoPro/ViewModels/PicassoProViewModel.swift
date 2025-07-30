@@ -35,18 +35,19 @@ import SwiftUI
     private func fetchData(){
         Task{
             await StableDiffusionAPIManager.shared.getImageUrls(prompt: prompt){ [weak self] result in
-                self?.isGeneratingImage = false
-                
-                switch result{
-                case .success(let apiResponseData):
-                    if let output = apiResponseData.output, output.count > 0{
-                        self?.imageUrl = output.first!
-                    } else {
-                        print("response is nil")
+                DispatchQueue.main.async {
+                    self?.isGeneratingImage = false
+                    switch result{
+                    case .success(let apiResponseData):
+                        if let output = apiResponseData.output, output.count > 0{
+                            self?.imageUrl = output.first!
+                        } else {
+                            self?.alertStatus = .fail("Error Occurred", "Something went wrong. Please try again.")
+                        }
+                    case .failure(let error):
+                        self?.imageUrl = ""
+                        self?.alertStatus = .init(from: error)
                     }
-                case .failure(let error):
-                    self?.imageUrl = ""
-                    self?.alertStatus = .init(from: error)
                 }
             }
         }
