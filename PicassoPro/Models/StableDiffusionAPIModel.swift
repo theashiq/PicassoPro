@@ -12,7 +12,6 @@ struct ApiResponseData: Decodable{
     var generationTime: Float?
     var id: Int?
     var output: [String]?
-    var meta: ApiResponseMeta?
 }
 
 struct ApiResponseMeta: Decodable{
