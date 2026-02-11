@@ -39,7 +39,7 @@ struct PicassoProView: View {
             Spacer()
             inputButton
         }
-        .onChange(of: viewModel.alertStatus) { error in
+        .onChange(of: viewModel.alert) { error in
             if error != .none {
                 isAlertPresented.toggle()
             }
@@ -48,12 +48,12 @@ struct PicassoProView: View {
             PromptInputView(viewModel: PromptInputViewModel(prompt: $viewModel.prompt), isPresented: $isInputViewPresented)
                 .presentationDetents([.medium, .fraction(0.75)])
         }
-        .alert(viewModel.alertStatus.title, isPresented: $isAlertPresented) {
+        .alert(viewModel.alert?.title ?? "", isPresented: $isAlertPresented) {
             Button("Ok", role: .cancel) {
-                viewModel.alertStatus = .none
+                viewModel.alert = nil
             }
         } message: {
-            Text(viewModel.alertStatus.message)
+            Text(viewModel.alert?.message ?? "")
         }
     }
     

@@ -10,7 +10,7 @@ import SwiftUI
 
 
 class PromptInputViewModel: ObservableObject {
-    @Published var prompt: Binding<PromptInput>
+    @Published var prompt: Binding<InputPrompt>
     
     @Published var expression: String
     @Published var excludedWordInput: String = ""
@@ -22,7 +22,7 @@ class PromptInputViewModel: ObservableObject {
         Set(words.components(separatedBy: ",").filter { $0.trimmingCharacters(in: .whitespacesAndNewlines).count > 2 })
     }
     
-    init(prompt: Binding<PromptInput>) {
+    init(prompt: Binding<InputPrompt>) {
         self.prompt = prompt
         
         self.expression = prompt.expression.wrappedValue
@@ -32,7 +32,7 @@ class PromptInputViewModel: ObservableObject {
     }
     
     func submit() {
-        prompt.wrappedValue = PromptInput(
+        prompt.wrappedValue = InputPrompt(
             expression: self.expression,
             excludedWords: self.excludedWords.joined(separator: ","),
             outputImageWidth: self.outputImageWidth,

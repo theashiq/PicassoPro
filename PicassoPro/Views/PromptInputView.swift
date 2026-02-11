@@ -97,7 +97,7 @@ struct ExcludedWordButton: View {
 
 
 struct PromptInputView_PreviewContainer: View {
-    @State var prompt: PromptInput = .empty
+    @State var prompt: InputPrompt = .empty
     @Binding var isPresented: Bool
     var body: some View {
         Text("Hello")

@@ -8,19 +8,19 @@
 import SwiftUI
 
 @MainActor class PicassoProViewModel: ObservableObject {
-    
-    @Published var prompt: PromptInput = .empty {
+    private let imageGenerator: ImageGeneratorProtocol
+    @Published var prompt: InputPrompt = .empty {
         didSet {
             if !isGeneratingImage && !prompt.isEmpty {
                 isGeneratingImage = true
-                alertStatus = .none
+                alert = nil
                 fetchData()
             }
         }
     }
     
     @Published var imageSaveState: TaskState = .toBeDone
-    @Published var alertStatus: AlertStatus = .none
+    @Published var alert: Alert? = nil
     @Published var isGeneratingImage: Bool = false
     @Published var imageUrl: String = "" {
         didSet {
@@ -32,26 +32,25 @@ import SwiftUI
         prompt.isEmpty && !isGeneratingImage && imageUrl.isEmpty
     }
     
+    init(imageGenerator: ImageGeneratorProtocol = StableDiffusionImageGenerator()) {
+        self.imageGenerator = imageGenerator
+    }
+    
     @MainActor
     private func fetchData() {
         Task {
             do {
-                let apiResponseData = try await StableDiffusionAPIManager.shared.getImageUrls(prompt: prompt)
-                if let output = apiResponseData.output, output.count > 0 {
-                    self.imageUrl = output.first!
-                } else {
-                    self.imageUrl = ""
-                    self.alertStatus = .fail("Error Occurred", "Something went wrong. Please try again.")
-                }
+                let generatedImage = try await imageGenerator.generateImage(from: prompt)
+                self.imageUrl = generatedImage.url
                 self.isGeneratingImage = false
             }
             catch(let error) {
                 self.isGeneratingImage = false
                 self.imageUrl = ""
-                if let sdError = error as? StableDiffusionError {
-                    self.alertStatus = .init(from: sdError)
+                if let sdError = error as? ImageGenerationError {
+                    self.alert = .init(from: sdError)
                 } else {
-                    self.alertStatus = .fail("Error Occurred", error.localizedDescription)
+                    self.alert = .init("Something Went Wrong", error.localizedDescription)
                 }
             }
         }
@@ -64,60 +63,42 @@ import SwiftUI
         
         let size = CGSize(width: prompt.outputImageWidth, height: prompt.outputImageHeight)
         guard let uiImage = image.getUIImage(newSize: size) else {
-            self.alertStatus = .fail("Saving Failed", "Failed to save image to the gallery")
+            self.alert = .init("Saving Failed", "Failed to save image to the gallery")
             return
         }
         
         let imageSaver = ImageSaver()
         imageSaver.errorHandler = { error in
-            self.alertStatus = .fail("Saving Failed", error.localizedDescription)
+            self.alert = .init("Saving Failed", error.localizedDescription)
             self.imageSaveState = .failed
         }
         imageSaver.successHandler = { [self] in
-            self.alertStatus = .success("Saved", "Image saved to gallery")
+            self.alert = .init("Saved", "Image saved to gallery")
             self.imageSaveState = .done
         }
         imageSaver.writeToPhotoAlbum(image: uiImage)
     }
 }
 
-enum AlertStatus: Equatable {
-    case none
-    case success(String, String)
-    case fail(String, String)
+struct Alert: Equatable {
+    let title: String
+    let message: String
     
-    var message: String {
-        switch self {
-        case .none:
-            return ""
-        case .success( _, let message):
-            return message
-        case .fail(_, let message):
-            return message
-        }
-    }
-    
-    var title: String {
-        switch self {
-        case .none:
-            return ""
-        case .success(let title, _):
-            return title
-        case .fail(let title, _):
-            return title
-        }
+    init(_ title: String, _ message: String) {
+        self.title = title
+        self.message = message
     }
 }
 
-extension AlertStatus {
-    init(from sdError: StableDiffusionError) {
+extension Alert {
+    init(from sdError: ImageGenerationError) {
         switch sdError {
         case .apiError(let message):
-            self = .success(sdError.rawValue, message)
+            self = .init(sdError.rawValue, message)
         case .networkError(let message):
-            self = .success(sdError.rawValue, message)
+            self = .init(sdError.rawValue, message)
         case .unknownError(let message):
-            self = .success(sdError.rawValue, message)
+            self = .init(sdError.rawValue, message)
         }
     }
 }

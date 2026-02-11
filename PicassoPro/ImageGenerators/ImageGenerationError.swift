@@ -1,16 +1,17 @@
 //
-//  StableDiffusionError.swift
+//  ImageGenerationError.swift
 //  PicassoPro
 //
-//  Created by mac 2019 on 10/2/23.
+//  Created by Ashiqur Rahman on 12/2/26.
 //
+
 
 import Foundation
 
-enum StableDiffusionError: Error, LocalizedError, Equatable {
+enum ImageGenerationError: Error, LocalizedError, Equatable {
     case apiError(String)
     case networkError(String)
-    case unknownError(String = "An  error occurred. Please retry after sometime")
+    case unknownError(String = "An error occurred. Please retry after sometime")
     
     var errorDescription: String? {
         switch self {
@@ -23,8 +24,7 @@ enum StableDiffusionError: Error, LocalizedError, Equatable {
         }
     }
 }
-
-extension StableDiffusionError: RawRepresentable {
+extension ImageGenerationError: RawRepresentable {
 
     public typealias RawValue = String
 
