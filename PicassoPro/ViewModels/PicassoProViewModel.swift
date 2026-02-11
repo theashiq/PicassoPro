@@ -32,22 +32,26 @@ import SwiftUI
         prompt.isEmpty && !isGeneratingImage && imageUrl.isEmpty
     }
     
+    @MainActor
     private func fetchData(){
-        Task{
-            await StableDiffusionAPIManager.shared.getImageUrls(prompt: prompt){ [weak self] result in
-                DispatchQueue.main.async {
-                    self?.isGeneratingImage = false
-                    switch result{
-                    case .success(let apiResponseData):
-                        if let output = apiResponseData.output, output.count > 0{
-                            self?.imageUrl = output.first!
-                        } else {
-                            self?.alertStatus = .fail("Error Occurred", "Something went wrong. Please try again.")
-                        }
-                    case .failure(let error):
-                        self?.imageUrl = ""
-                        self?.alertStatus = .init(from: error)
-                    }
+        Task {
+            do {
+                let apiResponseData = try await StableDiffusionAPIManager.shared.getImageUrls(prompt: prompt)
+                if let output = apiResponseData.output, output.count > 0{
+                    self.imageUrl = output.first!
+                } else {
+                    self.imageUrl = ""
+                    self.alertStatus = .fail("Error Occurred", "Something went wrong. Please try again.")
+                }
+                self.isGeneratingImage = false
+            }
+            catch(let error) {
+                self.isGeneratingImage = false
+                self.imageUrl = ""
+                if let sdError = error as? StableDiffusionError {
+                    self.alertStatus = .init(from: sdError)
+                } else {
+                    self.alertStatus = .fail("Error Occurred", error.localizedDescription)
                 }
             }
         }

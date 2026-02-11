@@ -42,18 +42,16 @@ final class StableDiffusionAPIManager{
         parameters.updateValue(prompt.outputImageHeight, forKey: "height")
     }
     
-    func getImageUrls(prompt: PromptInput, completed: @escaping (Result<ApiResponseData, StableDiffusionError>) -> Void) async {
+    func getImageUrls(prompt: PromptInput) async throws -> ApiResponseData {
         
         guard let url = URL(string: StableDiffusionAPIManager.urlString) else {
-            completed(Result.failure(StableDiffusionError.networkError("Invalid URL")))
-            return
+            throw StableDiffusionError.networkError("Invalid URL")
         }
         
         updateParameters(from: prompt)
         
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted) else{
-            completed(.failure(StableDiffusionError.networkError("Invalid HTTP Body")))
-            return
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted) else {
+            throw StableDiffusionError.networkError("Invalid HTTP Body")
         }
         
         var request = URLRequest(url: url)
@@ -63,30 +61,30 @@ final class StableDiffusionAPIManager{
         
         if let (data, _) = try? await URLSession.shared.data(for: request) {
             
-            if let apiResponseData = try? JSONDecoder().decode(ApiResponseData.self, from: data){
-                completed(.success(apiResponseData))
+            if let apiResponseData = try? JSONDecoder().decode(ApiResponseData.self, from: data) {
+                return apiResponseData
             }
             else if let rateLimitResponseResult = try? JSONDecoder().decode(RateLimitExceededResponse.self, from: data){
-                completed(.failure(StableDiffusionError.apiError(rateLimitResponseResult.message)))
+                throw StableDiffusionError.apiError(rateLimitResponseResult.message)
             }
             else if let invalidKeyResponse = try? JSONDecoder().decode(InvalidKeyResponse.self, from: data){
-                completed(.failure(StableDiffusionError.apiError(invalidKeyResponse.message)))
+                throw StableDiffusionError.apiError(invalidKeyResponse.message)
             }
             else if let failedResponse = try? JSONDecoder().decode(FailedResponse.self, from: data){
-                completed(.failure(StableDiffusionError.apiError(failedResponse.message)))
+                throw StableDiffusionError.apiError(failedResponse.message)
             }
             else if let validationErrorsResponse = try? JSONDecoder().decode(ValidationErrorsResponse.self, from: data){
-                completed(.failure(StableDiffusionError.apiError(validationErrorsResponse.message.prompt.first ?? "")))
+                throw StableDiffusionError.apiError(validationErrorsResponse.message.prompt.first ?? "")
             }
             else if let emptyModalIdErrorResponse = try? JSONDecoder().decode(EmptyModalIdErrorResponse.self, from: data){
-                completed(.failure(StableDiffusionError.apiError(emptyModalIdErrorResponse.message)))
+                throw StableDiffusionError.apiError(emptyModalIdErrorResponse.message)
             }
             else{
-                completed(.failure(StableDiffusionError.unknownError()))
+                throw StableDiffusionError.unknownError()
             }
         }
         else{
-            completed(.failure(StableDiffusionError.networkError("Unknown Network Error")))
+            throw StableDiffusionError.networkError("Unknown Network Error")
         }
     }
 }
