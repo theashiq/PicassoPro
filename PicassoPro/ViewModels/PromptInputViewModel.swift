@@ -9,8 +9,7 @@ import Foundation
 import SwiftUI
 
 
-class PromptInputViewModel: ObservableObject{
-    
+class PromptInputViewModel: ObservableObject {
     @Published var prompt: Binding<PromptInput>
     
     @Published var expression: String
@@ -19,8 +18,8 @@ class PromptInputViewModel: ObservableObject{
     @Published var outputImageWidth: Int
     @Published var outputImageHeight: Int
     
-    private static func breakExcludedWords(words: String) -> Set<String>{
-        Set(words.components(separatedBy: ",").filter{ $0.trimmingCharacters(in: .whitespacesAndNewlines).count > 2})
+    private static func breakExcludedWords(words: String) -> Set<String> {
+        Set(words.components(separatedBy: ",").filter { $0.trimmingCharacters(in: .whitespacesAndNewlines).count > 2 })
     }
     
     init(prompt: Binding<PromptInput>) {
@@ -32,7 +31,7 @@ class PromptInputViewModel: ObservableObject{
         self.outputImageHeight = prompt.outputImageHeight.wrappedValue
     }
     
-    func submit(){
+    func submit() {
         prompt.wrappedValue = PromptInput(
             expression: self.expression,
             excludedWords: self.excludedWords.joined(separator: ","),
@@ -41,19 +40,18 @@ class PromptInputViewModel: ObservableObject{
         )
     }
     
-    func addExcludedWord(){
-        
+    func addExcludedWord() {
         let trimmedInput = excludedWordInput.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        if trimmedInput.count > 2{
+        if trimmedInput.count > 2 {
             
-            if !excludedWords.contains(where: { $0.lowercased() ==  trimmedInput.lowercased()}){
+            if !excludedWords.contains(where: { $0.lowercased() ==  trimmedInput.lowercased() }) {
                 excludedWords.insert(trimmedInput)
                 excludedWordInput = ""
             }
         }
     }
-    func removeExcludedWord(word: String){
+    func removeExcludedWord(word: String) {
         excludedWords.remove(word.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 }

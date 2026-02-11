@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PromptInputView: View{
+struct PromptInputView: View {
     enum FocusedField {
         case expression, exclusions
     }
@@ -16,12 +16,11 @@ struct PromptInputView: View{
     @Binding var isPresented: Bool
     @FocusState private var focusedField: FocusedField?
     
-    var body: some View{
-        VStack(alignment: .center){
+    var body: some View {
+        VStack(alignment: .center) {
             Text("Enter Prompt").padding(.top)
             Form {
-                
-                Section("Expression"){
+                Section("Expression") {
                     TextField("Describe the Image", text: $viewModel.expression)
                         .focused($focusedField, equals: .expression)
                         .submitLabel(.next)
@@ -31,20 +30,20 @@ struct PromptInputView: View{
                     
                 }
                 
-                Section("Optional"){
+                Section("Optional") {
                     if viewModel.excludedWords.count > 0 {
-                        ScrollView(.horizontal, showsIndicators: false){
+                        ScrollView(.horizontal, showsIndicators: false) {
                             
-                            HStack{
-                                ForEach(Array(viewModel.excludedWords), id: \.self){ word in
-                                    ExcludedWordButton(title: word, action: {
+                            HStack {
+                                ForEach(Array(viewModel.excludedWords), id: \.self) { word in
+                                    ExcludedWordButton(title: word) {
                                         viewModel.removeExcludedWord(word: word)
-                                    })
+                                    }
                                 }
                             }
                         }
                     }
-                    HStack{
+                    HStack {
                         TextField("Enter Excluded Features", text: $viewModel.excludedWordInput)
                             .focused($focusedField, equals: .exclusions)
                             .submitLabel(.done)
@@ -52,9 +51,9 @@ struct PromptInputView: View{
                                 focusedField = nil
                             }
                         Spacer()
-                        Button(action: {
+                        Button {
                             viewModel.addExcludedWord()
-                        }){
+                        } label: {
                             Label("Add", systemImage: "plus.app").labelStyle(.titleAndIcon)
                         }
                         .buttonStyle(.bordered)
@@ -64,10 +63,10 @@ struct PromptInputView: View{
                 
             Spacer()
             
-            Button(action: {
+            Button {
                 isPresented = false
                 viewModel.submit()
-            }){
+            } label: {
                 Text("Generate")
                     .frame(width: 120, height: 55)
             }
@@ -76,15 +75,15 @@ struct PromptInputView: View{
     }
 }
 
-struct ExcludedWordButton: View{
+struct ExcludedWordButton: View {
     var title: String
     var action: () -> Void = {
         
     }
-    var body: some View{
-        HStack{
+    var body: some View {
+        HStack {
             Text(title)
-            Button(action: action){
+            Button(action: action) {
                 Image(systemName: "xmark.circle.fill")
                     .font(.title3)
             }
@@ -97,12 +96,12 @@ struct ExcludedWordButton: View{
 }
 
 
-struct PromptInputView_PreviewContainer: View{
+struct PromptInputView_PreviewContainer: View {
     @State var prompt: PromptInput = .empty
     @Binding var isPresented: Bool
-    var body: some View{
+    var body: some View {
         Text("Hello")
-            .sheet(isPresented: $isPresented){
+            .sheet(isPresented: $isPresented) {
                 PromptInputView(viewModel: PromptInputViewModel(prompt: $prompt), isPresented: .constant(true))
                     .presentationDetents([.medium, .fraction(0.75)])
             }

@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct ApiResponseData: Decodable{
+struct ApiResponseData: Decodable {
     var status: String?
     var generationTime: Float?
     var id: Int?
     var output: [String]?
 }
 
-struct ApiResponseMeta: Decodable{
+struct ApiResponseMeta: Decodable {
     var H: Int
     var W: Int
     var enable_attention_slicing: String
@@ -34,33 +34,33 @@ struct ApiResponseMeta: Decodable{
 
 
 
-struct RateLimitExceededResponse: Decodable{
+struct RateLimitExceededResponse: Decodable {
     var status: String
     var message: String
     var tips: String
 }
-struct InvalidKeyResponse: Decodable{
+struct InvalidKeyResponse: Decodable {
     var status: String
     var message: String
     var tip: String
 }
 
-struct FailedResponse: Decodable{
+struct FailedResponse: Decodable {
     var status: String
     var id: String
     var message: String
     var output: String
 }
 
-struct ValidationErrorsResponse: Decodable{
+struct ValidationErrorsResponse: Decodable {
     var status: String
     var message: ValidationErrorsPrompt
 }
-struct ValidationErrorsPrompt: Decodable{
+struct ValidationErrorsPrompt: Decodable {
     var prompt: [String]
 }
 
-struct EmptyModalIdErrorResponse: Decodable{
+struct EmptyModalIdErrorResponse: Decodable {
     var status: String
     var message: String
 }

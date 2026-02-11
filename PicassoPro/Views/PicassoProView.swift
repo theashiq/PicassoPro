@@ -16,17 +16,17 @@ struct PicassoProView: View {
     @State var animateInputButtonIndicator: Bool = false
     
     var body: some View {
-        VStack{
+        VStack {
             Text("Picasso Pro")
                 .font(.largeTitle)
                 .bold()
                 .foregroundColor(.accentColor)
             
-            if viewModel.showEmptyPromptSign{
+            if viewModel.showEmptyPromptSign {
                 Spacer()
                 emptyPrompt
             }
-            else{
+            else {
                 Text(viewModel.prompt.expression)
                     .font(.title3)
                     .frame(maxWidth: .infinity, maxHeight: 100)
@@ -39,17 +39,16 @@ struct PicassoProView: View {
             Spacer()
             inputButton
         }
-        .onChange(of: viewModel.alertStatus){ error in
-            if error != .none{
+        .onChange(of: viewModel.alertStatus) { error in
+            if error != .none {
                 isAlertPresented.toggle()
             }
         }
-        .sheet(isPresented: $isInputViewPresented){
+        .sheet(isPresented: $isInputViewPresented) {
             PromptInputView(viewModel: PromptInputViewModel(prompt: $viewModel.prompt), isPresented: $isInputViewPresented)
                 .presentationDetents([.medium, .fraction(0.75)])
         }
-        .alert(viewModel.alertStatus.title, isPresented: $isAlertPresented)
-        {
+        .alert(viewModel.alertStatus.title, isPresented: $isAlertPresented) {
             Button("Ok", role: .cancel) {
                 viewModel.alertStatus = .none
             }
@@ -58,7 +57,7 @@ struct PicassoProView: View {
         }
     }
     
-    private var emptyPrompt: some View{
+    private var emptyPrompt: some View {
         Text("Prompt is Empty\nEnter Prompt Below")
             .multilineTextAlignment(.center)
             .font(.title3)
@@ -66,8 +65,8 @@ struct PicassoProView: View {
             .lineSpacing(CGFloat(10))
     }
     
-    private var outputSection: some View{
-        ZStack{
+    private var outputSection: some View {
+        ZStack {
             AsyncImage(
                 url: URL(string: viewModel.imageUrl),
                 content: { image in
@@ -76,15 +75,15 @@ struct PicassoProView: View {
                         .padding(5)
                         .border(Color.accentColor)
                     
-                    HStack(spacing: 50){
+                    HStack(spacing: 50) {
                         ShareLink("Share", item: image, preview: SharePreview(viewModel.prompt.expression, image: image))
                         
-                        Button{
-                            withAnimation(.easeInOut(duration: 1)){
+                        Button {
+                            withAnimation(.easeInOut(duration: 1)) {
                                 viewModel.saveImage(image: image)
                             }
                         } label: {
-                            switch viewModel.imageSaveState{
+                            switch viewModel.imageSaveState {
                             case .toBeDone:
                                 Label("Save", systemImage: "square.and.arrow.down")
                             case .doing:
@@ -104,13 +103,13 @@ struct PicassoProView: View {
                     .padding()
                 },
                 placeholder: {
-                    if !viewModel.imageUrl.isEmpty{
+                    if !viewModel.imageUrl.isEmpty {
                         ProgressView("Loading").foregroundColor(.accentColor)
                     }
                 }
             ).opacity(viewModel.isGeneratingImage ? 0.2 : 1)
             
-            if viewModel.isGeneratingImage{
+            if viewModel.isGeneratingImage {
                 ProgressView("Processing").foregroundColor(.accentColor)
             }
         }
@@ -118,19 +117,19 @@ struct PicassoProView: View {
         
     }
     
-    private  var inputButton: some View{
+    private  var inputButton: some View {
         
-        Button(action: {
+        Button {
             isInputViewPresented = true
-        }){
+        } label: {
             Image(systemName: "pencil.circle.fill")
                 .bold()
                 .scaleEffect(3)
                 .padding(.bottom, viewModel.showEmptyPromptSign ? 50 : 20)
         }
         .disabled(viewModel.isGeneratingImage)
-        .overlay{
-            if viewModel.showEmptyPromptSign{
+        .overlay {
+            if viewModel.showEmptyPromptSign {
                 inputButtonIndicator
                     .onAppear {
                         animateInputButtonIndicator = viewModel.showEmptyPromptSign
@@ -138,7 +137,7 @@ struct PicassoProView: View {
             }
         }
     }
-    private var inputButtonIndicator: some View{
+    private var inputButtonIndicator: some View {
         Image(systemName: "arrowshape.right.fill")
             .rotationEffect(Angle(degrees: 90))
             .scaleEffect(animateInputButtonIndicator ? 1.5 : 1)
@@ -156,3 +155,4 @@ struct PicassoProView_Previews: PreviewProvider {
 }
 
 
+//A calm and peaceful nature scene with text on top "Be good to others, that will protect you against evil."

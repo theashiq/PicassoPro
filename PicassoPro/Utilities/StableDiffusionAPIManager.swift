@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class StableDiffusionAPIManager{
+final class StableDiffusionAPIManager {
     private static let urlString = "https://modelslab.com/api/v6/realtime/text2img"
     private static let apiKey = "zAXjIPV7I9Sdl1YJ5e6Z4Zl5ucgjd62UbKJ4xrYHFeF47TWzmxFtNe95M4Dj"
     
@@ -33,7 +33,7 @@ final class StableDiffusionAPIManager{
     
     static let shared = StableDiffusionAPIManager()
     
-    private init(){}
+    private init() { }
     
     private func updateParameters(from prompt: PromptInput) {
         parameters.updateValue(prompt.expression, forKey: "prompt")
@@ -64,26 +64,26 @@ final class StableDiffusionAPIManager{
             if let apiResponseData = try? JSONDecoder().decode(ApiResponseData.self, from: data) {
                 return apiResponseData
             }
-            else if let rateLimitResponseResult = try? JSONDecoder().decode(RateLimitExceededResponse.self, from: data){
+            else if let rateLimitResponseResult = try? JSONDecoder().decode(RateLimitExceededResponse.self, from: data) {
                 throw StableDiffusionError.apiError(rateLimitResponseResult.message)
             }
-            else if let invalidKeyResponse = try? JSONDecoder().decode(InvalidKeyResponse.self, from: data){
+            else if let invalidKeyResponse = try? JSONDecoder().decode(InvalidKeyResponse.self, from: data) {
                 throw StableDiffusionError.apiError(invalidKeyResponse.message)
             }
-            else if let failedResponse = try? JSONDecoder().decode(FailedResponse.self, from: data){
+            else if let failedResponse = try? JSONDecoder().decode(FailedResponse.self, from: data) {
                 throw StableDiffusionError.apiError(failedResponse.message)
             }
-            else if let validationErrorsResponse = try? JSONDecoder().decode(ValidationErrorsResponse.self, from: data){
+            else if let validationErrorsResponse = try? JSONDecoder().decode(ValidationErrorsResponse.self, from: data) {
                 throw StableDiffusionError.apiError(validationErrorsResponse.message.prompt.first ?? "")
             }
-            else if let emptyModalIdErrorResponse = try? JSONDecoder().decode(EmptyModalIdErrorResponse.self, from: data){
+            else if let emptyModalIdErrorResponse = try? JSONDecoder().decode(EmptyModalIdErrorResponse.self, from: data) {
                 throw StableDiffusionError.apiError(emptyModalIdErrorResponse.message)
             }
-            else{
+            else {
                 throw StableDiffusionError.unknownError()
             }
         }
-        else{
+        else {
             throw StableDiffusionError.networkError("Unknown Network Error")
         }
     }

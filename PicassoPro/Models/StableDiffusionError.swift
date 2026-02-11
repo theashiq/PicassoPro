@@ -7,13 +7,13 @@
 
 import Foundation
 
-enum StableDiffusionError: Error, LocalizedError, Equatable{
+enum StableDiffusionError: Error, LocalizedError, Equatable {
     case apiError(String)
     case networkError(String)
     case unknownError(String = "An  error occurred. Please retry after sometime")
     
-    var errorDescription: String?{
-        switch self{
+    var errorDescription: String? {
+        switch self {
         case .apiError(let message):
             return message
         case .networkError(let message):

@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-@MainActor class PicassoProViewModel: ObservableObject{
+@MainActor class PicassoProViewModel: ObservableObject {
     
     @Published var prompt: PromptInput = .empty {
-        didSet{
+        didSet {
             if !isGeneratingImage && !prompt.isEmpty {
                 isGeneratingImage = true
                 alertStatus = .none
@@ -22,22 +22,22 @@ import SwiftUI
     @Published var imageSaveState: TaskState = .toBeDone
     @Published var alertStatus: AlertStatus = .none
     @Published var isGeneratingImage: Bool = false
-    @Published var imageUrl: String = ""{
-        didSet{
+    @Published var imageUrl: String = "" {
+        didSet {
             imageSaveState = .toBeDone
         }
     }
     
-    var showEmptyPromptSign: Bool{
+    var showEmptyPromptSign: Bool {
         prompt.isEmpty && !isGeneratingImage && imageUrl.isEmpty
     }
     
     @MainActor
-    private func fetchData(){
+    private func fetchData() {
         Task {
             do {
                 let apiResponseData = try await StableDiffusionAPIManager.shared.getImageUrls(prompt: prompt)
-                if let output = apiResponseData.output, output.count > 0{
+                if let output = apiResponseData.output, output.count > 0 {
                     self.imageUrl = output.first!
                 } else {
                     self.imageUrl = ""
@@ -57,9 +57,8 @@ import SwiftUI
         }
     }
     
-    func saveImage(image: Image){
-        
-        if imageSaveState == .done || imageSaveState == .doing{
+    func saveImage(image: Image) {
+        if imageSaveState == .done || imageSaveState == .doing {
             return
         }
         
@@ -82,13 +81,13 @@ import SwiftUI
     }
 }
 
-enum AlertStatus: Equatable{
+enum AlertStatus: Equatable {
     case none
     case success(String, String)
     case fail(String, String)
     
-    var message: String{
-        switch self{
+    var message: String {
+        switch self {
         case .none:
             return ""
         case .success( _, let message):
@@ -98,8 +97,8 @@ enum AlertStatus: Equatable{
         }
     }
     
-    var title: String{
-        switch self{
+    var title: String {
+        switch self {
         case .none:
             return ""
         case .success(let title, _):
@@ -110,9 +109,9 @@ enum AlertStatus: Equatable{
     }
 }
 
-extension AlertStatus{
+extension AlertStatus {
     init(from sdError: StableDiffusionError) {
-        switch sdError{
+        switch sdError {
         case .apiError(let message):
             self = .success(sdError.rawValue, message)
         case .networkError(let message):
@@ -123,7 +122,7 @@ extension AlertStatus{
     }
 }
 
-enum TaskState{
+enum TaskState {
     case toBeDone
     case doing
     case done
