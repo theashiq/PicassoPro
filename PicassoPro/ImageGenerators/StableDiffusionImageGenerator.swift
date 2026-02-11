@@ -39,7 +39,7 @@ final class StableDiffusionImageGenerator {
         parameters.updateValue(prompt.outputImageHeight, forKey: "height")
     }
     
-    private func getImageUrls(prompt: InputPrompt) async throws -> ApiResponseData {
+    private func getImageUrls(prompt: InputPrompt) async throws -> StableDiffusionResponseData {
         
         guard let url = URL(string: StableDiffusionImageGenerator.urlString) else {
             throw ImageGenerationError.networkError("Invalid URL")
@@ -58,22 +58,22 @@ final class StableDiffusionImageGenerator {
         
         if let (data, _) = try? await URLSession.shared.data(for: request) {
             
-            if let apiResponseData = try? JSONDecoder().decode(ApiResponseData.self, from: data) {
+            if let apiResponseData = try? JSONDecoder().decode(StableDiffusionResponseData.self, from: data) {
                 return apiResponseData
             }
-            else if let rateLimitResponseResult = try? JSONDecoder().decode(RateLimitExceededResponse.self, from: data) {
+            else if let rateLimitResponseResult = try? JSONDecoder().decode(StableDiffusionRateLimitExceededResponse.self, from: data) {
                 throw ImageGenerationError.apiError(rateLimitResponseResult.message)
             }
-            else if let invalidKeyResponse = try? JSONDecoder().decode(InvalidKeyResponse.self, from: data) {
+            else if let invalidKeyResponse = try? JSONDecoder().decode(StableDiffusionInvalidKeyResponse.self, from: data) {
                 throw ImageGenerationError.apiError(invalidKeyResponse.message)
             }
-            else if let failedResponse = try? JSONDecoder().decode(FailedResponse.self, from: data) {
+            else if let failedResponse = try? JSONDecoder().decode(StableDiffusionFailedResponse.self, from: data) {
                 throw ImageGenerationError.apiError(failedResponse.message)
             }
-            else if let validationErrorsResponse = try? JSONDecoder().decode(ValidationErrorsResponse.self, from: data) {
+            else if let validationErrorsResponse = try? JSONDecoder().decode(StableDiffusionValidationErrorsResponse.self, from: data) {
                 throw ImageGenerationError.apiError(validationErrorsResponse.message.prompt.first ?? "")
             }
-            else if let emptyModalIdErrorResponse = try? JSONDecoder().decode(EmptyModalIdErrorResponse.self, from: data) {
+            else if let emptyModalIdErrorResponse = try? JSONDecoder().decode(StableDiffusionEmptyModalIdErrorResponse.self, from: data) {
                 throw ImageGenerationError.apiError(emptyModalIdErrorResponse.message)
             }
             else {
@@ -98,14 +98,14 @@ extension StableDiffusionImageGenerator: ImageGeneratorProtocol {
 }
 
 // MARK: - Models
-struct ApiResponseData: Decodable {
+private struct StableDiffusionResponseData: Decodable {
     var status: String?
     var generationTime: Float?
     var id: Int?
     var output: [String]?
 }
 
-struct ApiResponseMeta: Decodable {
+private struct StableDiffusionResponseMeta: Decodable {
     var H: Int
     var W: Int
     var enable_attention_slicing: String
@@ -123,35 +123,35 @@ struct ApiResponseMeta: Decodable {
     var vae: String
 }
 
-
-
-struct RateLimitExceededResponse: Decodable {
+private struct StableDiffusionRateLimitExceededResponse: Decodable {
     var status: String
     var message: String
     var tips: String
 }
-struct InvalidKeyResponse: Decodable {
+
+private struct StableDiffusionInvalidKeyResponse: Decodable {
     var status: String
     var message: String
     var tip: String
 }
 
-struct FailedResponse: Decodable {
+private struct StableDiffusionFailedResponse: Decodable {
     var status: String
     var id: String
     var message: String
     var output: String
 }
 
-struct ValidationErrorsResponse: Decodable {
+private struct StableDiffusionValidationErrorsResponse: Decodable {
     var status: String
-    var message: ValidationErrorsPrompt
+    var message: StableDiffusionValidationErrorsPrompt
 }
-struct ValidationErrorsPrompt: Decodable {
+
+private struct StableDiffusionValidationErrorsPrompt: Decodable {
     var prompt: [String]
 }
 
-struct EmptyModalIdErrorResponse: Decodable {
+private struct StableDiffusionEmptyModalIdErrorResponse: Decodable {
     var status: String
     var message: String
 }
