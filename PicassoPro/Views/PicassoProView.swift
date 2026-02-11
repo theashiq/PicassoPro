@@ -141,11 +141,9 @@ struct PicassoProView: View {
     private var inputButtonIndicator: some View{
         Image(systemName: "arrowshape.right.fill")
             .rotationEffect(Angle(degrees: 90))
-            .scaleEffect(CGSize(width: 1.5, height: 1.5))
-            .foregroundColor(.accentColor)
+            .scaleEffect(animateInputButtonIndicator ? 1.5 : 1)
+            .foregroundColor(animateInputButtonIndicator ? .accentColor: .accentColor.opacity(0.5))
             .offset(y: animateInputButtonIndicator ? -90 : -120)
-            .imageScale(animateInputButtonIndicator ? .large : .small)
-            .opacity(animateInputButtonIndicator ? 1 : 0.2)
             .animation(.easeInOut(duration: 1).repeatForever(), value: animateInputButtonIndicator)
     }
 }
