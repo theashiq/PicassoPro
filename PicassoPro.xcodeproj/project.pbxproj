@@ -20,6 +20,7 @@
 		1AC6B0222ABA79AA004BF4F6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AC6B0212ABA79AA004BF4F6 /* Preview Assets.xcassets */; };
 		BFBE69832F3D04E4008B4812 /* ImageGeneratorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBE69822F3D04E4008B4812 /* ImageGeneratorProtocol.swift */; };
 		BFBE69852F3D055B008B4812 /* ImageGenerationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBE69842F3D055B008B4812 /* ImageGenerationError.swift */; };
+		BFBE69872F3D0DFB008B4812 /* StabilityAIImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBE69862F3D0DFB008B4812 /* StabilityAIImageGenerator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		1AC6B0212ABA79AA004BF4F6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BFBE69822F3D04E4008B4812 /* ImageGeneratorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGeneratorProtocol.swift; sourceTree = "<group>"; };
 		BFBE69842F3D055B008B4812 /* ImageGenerationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGenerationError.swift; sourceTree = "<group>"; };
+		BFBE69862F3D0DFB008B4812 /* StabilityAIImageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StabilityAIImageGenerator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 				BFBE69842F3D055B008B4812 /* ImageGenerationError.swift */,
 				BFBE69822F3D04E4008B4812 /* ImageGeneratorProtocol.swift */,
 				1AB150EB2ABC3A2B004D6B7D /* StableDiffusionImageGenerator.swift */,
+				BFBE69862F3D0DFB008B4812 /* StabilityAIImageGenerator.swift */,
 			);
 			path = ImageGenerators;
 			sourceTree = "<group>";
@@ -219,6 +222,7 @@
 				BFBE69852F3D055B008B4812 /* ImageGenerationError.swift in Sources */,
 				1AB494A72ABB31F700CDC43E /* PromptInputView.swift in Sources */,
 				1AC6B01D2ABA79A8004BF4F6 /* PicassoProView.swift in Sources */,
+				BFBE69872F3D0DFB008B4812 /* StabilityAIImageGenerator.swift in Sources */,
 				1AC6B01B2ABA79A8004BF4F6 /* PicassoProApp.swift in Sources */,
 				1AB494AB2ABB3AEA00CDC43E /* PicassoProViewModel.swift in Sources */,
 				1AB150EC2ABC3A2B004D6B7D /* StableDiffusionImageGenerator.swift in Sources */,

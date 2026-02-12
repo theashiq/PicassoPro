@@ -24,6 +24,7 @@ enum ImageGenerationError: Error, LocalizedError, Equatable {
         }
     }
 }
+
 extension ImageGenerationError: RawRepresentable {
 
     public typealias RawValue = String
@@ -45,4 +46,7 @@ extension ImageGenerationError: RawRepresentable {
         case .unknownError: return "Unknown Error"
         }
     }
+    
+    static let invalidRequestBody = Self.networkError("Invalid Request Body")
+    static let unknownNetworkError = Self.networkError("Unknown Network Error")
 }

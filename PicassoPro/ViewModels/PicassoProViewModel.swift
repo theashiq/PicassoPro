@@ -32,7 +32,7 @@ import SwiftUI
         prompt.isEmpty && !isGeneratingImage && imageUrl.isEmpty
     }
     
-    init(imageGenerator: ImageGeneratorProtocol = StableDiffusionImageGenerator()) {
+    init(imageGenerator: ImageGeneratorProtocol = StabilityAIImageGenerator()) {
         self.imageGenerator = imageGenerator
     }
     

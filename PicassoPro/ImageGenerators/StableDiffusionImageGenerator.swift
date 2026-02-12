@@ -40,15 +40,10 @@ final class StableDiffusionImageGenerator {
     }
     
     private func getImageUrls(prompt: InputPrompt) async throws -> StableDiffusionResponseData {
-        
-        guard let url = URL(string: StableDiffusionImageGenerator.urlString) else {
-            throw ImageGenerationError.networkError("Invalid URL")
-        }
-        
+        let url = URL(string: StableDiffusionImageGenerator.urlString)!
         updateParameters(from: prompt)
-        
         guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted) else {
-            throw ImageGenerationError.networkError("Invalid HTTP Body")
+            throw ImageGenerationError.invalidRequestBody
         }
         
         var request = URLRequest(url: url)
@@ -57,7 +52,6 @@ final class StableDiffusionImageGenerator {
         request.httpBody = httpBody
         
         if let (data, _) = try? await URLSession.shared.data(for: request) {
-            
             if let apiResponseData = try? JSONDecoder().decode(StableDiffusionResponseData.self, from: data) {
                 return apiResponseData
             }
@@ -81,7 +75,7 @@ final class StableDiffusionImageGenerator {
             }
         }
         else {
-            throw ImageGenerationError.networkError("Unknown Network Error")
+            throw ImageGenerationError.unknownNetworkError
         }
     }
 }
